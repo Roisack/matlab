@@ -8,6 +8,19 @@ function output = split_frequencies(input_filepath, channels, pass)
 [soundfile, sampling_frequency] = wavread(input_filepath);
 input_filepath_noextension = fileparts(input_filepath);
 
+% Write original spectrum
+t = 0:1/sampling_frequency:(length(soundfile)-1)/sampling_frequency;
+n = length(soundfile)-1;
+f = sampling_frequency/2 * linspace(0,1,length(soundfile));
+sound_fft = abs(fft(soundfile));
+p = figure('visible', 'off');
+plot(f, sound_fft);
+xlabel('Frequency in Hz');
+ylabel('Magnitude');
+title('Full spectrum');
+image_filename = sprintf('%s/full_spectrum.png', input_filepath_noextension);
+saveas(p, image_filename, 'png');
+    
 step_size = 2000;
 for current_frequency = 1:step_size:sampling_frequency
     frequency_start = current_frequency;
@@ -17,7 +30,7 @@ for current_frequency = 1:step_size:sampling_frequency
 
     t = 0:1/sampling_frequency:(length(filtered_data)-1)/sampling_frequency;
     n = length(filtered_data)-1;
-    f = 0:sampling_frequency/n:sampling_frequency;
+    f = sampling_frequency/2 * linspace(0,1,length(soundfile));
     sound_fft = abs(fft(filtered_data));
     p = figure('visible', 'off');
     plot(f, sound_fft);
